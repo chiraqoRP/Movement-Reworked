@@ -80,9 +80,9 @@ local matChange = CreateConVar("sv_kait_material_speed_change_enabled", 1, cf, "
 local stairs = CreateConVar("sv_kait_stairs_stumble_enabled", 0, cf, "Stumble on fucking stairs while running (COF style).", 0, 1)
 local stairsHeight = CreateConVar("sv_kait_stairs_stumble_height", 6, cf, "How tall should a ledge be to stumble?")
 local stairsChance = CreateConVar("sv_kait_stairs_stumble_chance", 100, cf, "Chance of stumbling.", 0, 100)
+local cStamina = nil
 local endAddPos = Vector(0, 0, -20)
 local stumbleFormat = "movement/stumble_0%i.ogg"
-local viewOffsets = {}
 local materialSpeeds = {
     [MAT_DIRT] = 0.8,
     [MAT_FLESH] = 0.8,
@@ -124,8 +124,16 @@ hook.Add("SetupMove", "MovementRW.DoMove", function(ply, mv, cmd)
     mv:SetMaxClientSpeed(newSpeedLerp * speedMul)
     mv:SetMaxSpeed(newSpeedLerp * speedMul)
     pSetCrouchedWalkSpeed(ply, eGetNW2Float(ply, "kait_crouch_speed_lerp"))
-    -- pSetDuckSpeed(ply, crouchSpeed:GetFloat())
-    -- pSetUnDuckSpeed(ply, crouchSpeed:GetFloat())
+
+    if cStamina == false then
+        cStamina = GetConVar("sv_crouch_stamina")
+    end
+
+    if !cStamina or !cStamina:GetBool() then
+        pSetDuckSpeed(ply, crouchSpeed:GetFloat())
+        pSetUnDuckSpeed(ply, crouchSpeed:GetFloat())
+    end
+
     pSetSlowWalkSpeed(ply, minSpeed:GetFloat() * minSpeedMult:GetFloat())
     pSetWalkSpeed(ply, minSpeed:GetFloat())
     pSetRunSpeed(ply, maxSpeed:GetFloat() * 1.5)
