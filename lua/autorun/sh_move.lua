@@ -50,6 +50,7 @@ end)
 
 local pGetWalkSpeed = PLAYER.GetWalkSpeed
 local pGetSlowWalkSpeed = PLAYER.GetSlowWalkSpeed
+local pGetCrouchedWalkSpeed = PLAYER.GetCrouchedWalkSpeed
 local eIsFlagSet = ENTITY.IsFlagSet
 local pSetCrouchedWalkSpeed = PLAYER.SetCrouchedWalkSpeed
 local pSetDuckSpeed = PLAYER.SetDuckSpeed
@@ -99,6 +100,7 @@ hook.Add("SetupMove", "MovementRW.DoMove", function(ply, mv, cmd)
 
     local originalSpeed = cmd:KeyDown(IN_SPEED) and maxSpeed:GetFloat() * 1.5
                           or cmd:KeyDown(IN_WALK) and pGetSlowWalkSpeed(ply)
+                          or eIsFlagSet(ply, FL_DUCKING) and pGetCrouchedWalkSpeed(ply)
                           or pGetWalkSpeed(ply)
 
     local speedMul = math.Round(mv:GetMaxClientSpeed() / originalSpeed, 4)
